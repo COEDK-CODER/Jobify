@@ -7,11 +7,13 @@ import { NotFoundError } from '../errors/customError.js';
 let jobs=[{id:nanoid(),company:'Apple',position:'front-end'},{id:nanoid(),company:'Google',position:'back-end'}]
 
 export const getAllJobs=async(req,res)=>{
-     const jobs =await  Job.find({});
+    console.log(req.user);
+     const jobs =await  Job.find({createdBy:req.user.userId});
     res.status(StatusCodes.OK).json({jobs});
 }
 
 export const createJob=async (req,res)=>{
+    req.body.createdBy=req.user.userId;
     const job=await Job.create(req.body);
     res.status(StatusCodes.ACCEPTED).json({job});
 };

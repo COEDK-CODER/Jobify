@@ -1,4 +1,4 @@
-import { UnauthenticatedError, UnauthorizedError } from "../errors/customError.js";
+import { BadRequestError, UnauthenticatedError, UnauthorizedError } from "../errors/customError.js";
 import { verifyJWT } from "../utils/tokenUtils.js";
 
 export const authenticateUser= (req,res,next)=>{
@@ -9,7 +9,7 @@ export const authenticateUser= (req,res,next)=>{
     try {
         console.log(verifyJWT(token))
         const {userId,role}=verifyJWT(token);
-     
+       
         req.user={userId,role};
         // console.log("aa")
         // console.log(req.cookies);
@@ -34,3 +34,4 @@ export const authorizePermissions=(...rest)=>{
     }
     
 }
+

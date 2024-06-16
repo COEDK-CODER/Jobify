@@ -11,15 +11,18 @@ const withValidationErrors=(validateValues)=>{
     return [validateValues,(req,res,next)=>{
      
         const errors=validationResult(req);
+    
         if(!errors.isEmpty()){
             console.log(errors);
+           const errorMessages=errors.array().map(x=>x.msg);
+           
             if(errors.array()[0].msg.startsWith('no job')){
-                throw new NotFoundError(errors.array());
+                throw new NotFoundError(errorMessages);
             }
             if(errors.array()[0].msg.startsWith('not authorized')){
                 throw new UnauthorizedError('not authorized to this route')
             }
-            throw new BadRequestError(errors.array());
+            throw new BadRequestError(errorMessages);
         }
         next();
     }]
@@ -77,7 +80,7 @@ export const validateJobInput=withValidationErrors(
     export const validateUpdateUserInput=withValidationErrors([ 
         body('name').notEmpty().isLength({min:4,max:12}).withMessage('Invalid username'),
         body('email').notEmpty().withMessage("Invalid Email").isEmail().withMessage("Invalid Email").
-        custom(async(email)=>{
+        custom(async({email,req})=>{
             const user=await User.findOne({email});
             if(user && user._id.toString()!==req.user.userId){
                 throw new BadRequestError('email already exists');

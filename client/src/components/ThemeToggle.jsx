@@ -6,7 +6,7 @@ import Wrapper from "../assets/wrappers/ThemeToggle";
 const ThemeToggle = () => {
   const { isDarkTheme, toggleDarkTheme } = useDashboardContext();
   const data = useDashboardContext();
-  console.log(isDarkTheme);
+
   return (
     <Wrapper onClick={toggleDarkTheme}>
       {isDarkTheme ? <BsFillSunFill /> : <BsFillMoonFill />}

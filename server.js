@@ -8,8 +8,13 @@ import morgan from 'morgan';
 import router from './routes/jobRoutes.js';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import cloudinary from 'cloudinary'
 
-
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET,
+})
 
 import errorHandlerMiddleware from './middlewares/errorHandlerMiddleware.js';
 import { body ,validationResult } from 'express-validator';
@@ -17,11 +22,18 @@ import authRouter from './routes/authRoutes.js';
 import { authenticateUser } from './middlewares/authMiddleware.js';
 import cookieParser from 'cookie-parser';
 import userRouter from './routes/userRoutes.js';
+
+//public
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import path from 'path';
+
 const app=express();
 const port=process.env.PORT ||5000;
 
 app.use(cors({
-    origin:"http://localhost:5173"
+    origin:"http://localhost:5173",
+    credentials:true
 }));
 const getData=async()=>{
     const reponse=await  fetch('https://www.course-api.com/react-useReducer-cart-project');
@@ -31,10 +43,13 @@ const getData=async()=>{
 }
 
 
-// getData();
+const __dirname=dirname(fileURLToPath(import.meta.url))
 if(process.env.NODE_ENV==='development'){
     app.use(morgan('dev'))
 }
+app.use(express.static(path.resolve(__dirname,'./public')))
+// getData();
+
 
 app.use(cookieParser())
 app.use(express.json());

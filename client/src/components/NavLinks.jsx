@@ -8,6 +8,9 @@ const NavLinks = (props) => {
   return (
     <div className="nav-links">
       {links.map((x) => {
+        if (data.user.role != "admin" && x.path === "admin") {
+          return;
+        }
         return (
           <NavLink
             to={x.path}

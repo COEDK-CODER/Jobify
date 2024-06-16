@@ -15,7 +15,7 @@ export const getAllJobs=async(req,res)=>{
 export const createJob=async (req,res)=>{
     req.body.createdBy=req.user.userId;
     const job=await Job.create(req.body);
-    res.status(StatusCodes.ACCEPTED).json({job});
+    res.status(StatusCodes.OK).json({job});
 };
 
 export const getSingleJob=async (req,res)=>{
@@ -32,3 +32,13 @@ export const updateJob=async(req,res)=>{
     const removedJob=await Job.findByIdAndDelete(req.params.id);
     res.status(StatusCodes.OK).json({msg:"job deleted",removedJob});
 };
+
+export const showStats=async(req,res)=>{
+    const defaultStats={
+        pending:22,
+        interview:11,
+        declined:4
+    };
+    let monthlyApplications=[{date:'May 23',count:12},{date:'Jun 23',count:9},{date:'Jul 23',count:3}];
+    res.status(StatusCodes.OK).json({defaultStats,monthlyApplications});
+}

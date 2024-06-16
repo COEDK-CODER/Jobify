@@ -18,7 +18,11 @@ const UserSchema=new mongoose.Schema({
         type:String,
         enum:Object.values(ROLES),
         default:ROLES.USER
-    }
+    },
+    avatar:{
+        type:String
+    },
+    avatarPublicId:String
 
 },{timestamps:true});
 

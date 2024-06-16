@@ -9,8 +9,7 @@ import NavLinks from "./NavLinks";
 
 const SmallSidebar = () => {
   const data = useDashboardContext();
-  console.log("dine");
-  console.log(data.showSidebar);
+
   return (
     <Wrapper>
       <div

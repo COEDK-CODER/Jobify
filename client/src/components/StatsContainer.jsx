@@ -1,0 +1,42 @@
+import React from "react";
+import { FaSuitcaseRolling, FaCalendarCheck, FaBug } from "react-icons/fa";
+import Wrapper from "../assets/wrappers/StatsContainer";
+import StatItem from "./StatItem";
+import { ImInsertTemplate } from "react-icons/im";
+
+function StatsContainer({ defaultStats }) {
+  console.log(defaultStats);
+  const stats = [
+    {
+      title: "Pending Applications",
+      count: defaultStats?.pending || 0,
+      icon: <FaSuitcaseRolling />,
+      color: "#f59e0b",
+      bcg: "#fef3c7",
+    },
+    {
+      title: "Interviewed Applications",
+      count: defaultStats?.interview || 0,
+      icon: <FaCalendarCheck />,
+      color: "#647acb",
+      bcg: "#e0e8f9",
+    },
+    {
+      title: "Declined Applications",
+      count: defaultStats?.declined || 0,
+      icon: <FaBug />,
+      color: "#d66a6a",
+      bcg: "#ffeeee",
+    },
+  ];
+  console.log(stats);
+  return (
+    <Wrapper>
+      {stats.map((item) => {
+        return <StatItem key={item.title} {...item} />;
+      })}
+    </Wrapper>
+  );
+}
+
+export default StatsContainer;

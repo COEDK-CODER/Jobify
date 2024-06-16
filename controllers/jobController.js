@@ -1,6 +1,7 @@
 import Job from '../models/JobModel.js'
 import { StatusCodes } from 'http-status-codes';
-
+import mongoose from 'mongoose';
+import dayjs from 'dayjs';
 
 import { nanoid } from 'nanoid';
 import { NotFoundError } from '../errors/customError.js';
@@ -34,11 +35,42 @@ export const updateJob=async(req,res)=>{
 };
 
 export const showStats=async(req,res)=>{
+    let stats=await Job.aggregate([
+        {
+            $match:{createdBy: new mongoose.Types.ObjectId(req.user.userId)}
+        },
+        {
+            $group:{_id: '$jobStatus',count:{$sum:1}}
+        }
+    ]);
+    console.log(stats)
+    stats=stats.reduce((acc,curr)=>{
+        const {_id,count}=curr;
+        acc[_id]=count;
+        return acc;
+    },{})
+    console.log(stats);
+    let monthlyApplications=await Job.aggregate(
+        [
+            {$match:{createdBy:new mongoose.Types.ObjectId(req.user.userId)}},
+            {
+                $group:{
+                    _id:{year:{$year:'$createdAt'},month:{$month:'$createdAt'}},
+                    count:{$sum:1}
+                }
+            },{
+                $sort:{'_id.year':-1,'_id:month':-1}
+            },{
+                $limit:6
+            }
+        ]
+    )
+    console.log(monthlyApplications)
     const defaultStats={
-        pending:22,
-        interview:11,
-        declined:4
+        pending:stats.pending||0,
+        interview:stats.interview||0,
+        declined:stats.declined||0
     };
-    let monthlyApplications=[{date:'May 23',count:12},{date:'Jun 23',count:9},{date:'Jul 23',count:3}];
-    res.status(StatusCodes.OK).json({defaultStats,monthlyApplications});
+    let monthlyApplicationsStats=[{date:'May 23',count:12},{date:'Jun 23',count:9},{date:'Jul 23',count:3}];
+    res.status(StatusCodes.OK).json({defaultStats,monthlyApplicationsStats});
 }

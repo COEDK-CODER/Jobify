@@ -29,19 +29,12 @@ const Register = () => {
         <Logo />
         <h4>Register</h4>
 
-        <FormRow
-          labelName="Name"
-          inputType="text"
-          id="name"
-          name="name"
-          defaultValue="Dinesh"
-        />
+        <FormRow labelName="Name" inputType="text" id="name" name="name" />
         <FormRow
           labelName="Last Name"
           inputType="text"
           id="lastname"
           name="lastName"
-          defaultValue="kumar"
         />
         <FormRow
           labelName="Location"
@@ -50,19 +43,12 @@ const Register = () => {
           name="location"
           defaultValue="Hyderabad"
         />
-        <FormRow
-          labelName="Email"
-          inputType="email"
-          id="email"
-          name="email"
-          defaultValue="dinesh@gmail.com"
-        />
+        <FormRow labelName="Email" inputType="email" id="email" name="email" />
         <FormRow
           labelName="Password"
           inputType="password"
           id="password"
           name="password"
-          defaultValue="Password.123"
         />
         <button type="submit" className="btn btn-block" disabled={isSubmitting}>
           {isSubmitting ? "submitting..." : "submit"}

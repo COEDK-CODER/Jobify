@@ -1,6 +1,6 @@
 import React from "react";
 
-function FormRowSelect({ name, labelText, list, defaultValue = "" }) {
+function FormRowSelect({ name, labelText, list, defaultValue = "", onChange }) {
   return (
     <div className="form-row">
       <label htmlFor={labelText} className="form-label">
@@ -11,6 +11,7 @@ function FormRowSelect({ name, labelText, list, defaultValue = "" }) {
         id={name}
         defaultValue={defaultValue}
         className="form-select"
+        onChange={onChange}
       >
         {Object.values(list).map((x) => {
           return (

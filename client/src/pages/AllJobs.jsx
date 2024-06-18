@@ -5,12 +5,15 @@ import customFetch from "../utils/customFetch";
 import { useLoaderData } from "react-router-dom";
 import { useContext, createContext } from "react";
 
-export const loader = async () => {
+export const loader = async ({ request }) => {
+  const params = Object.fromEntries([
+    ...new URL(request.url).searchParams.entries(),
+  ]);
+
   try {
-    const { data } = await customFetch.get("/jobs");
-    console.log("sha");
-    console.log(data);
-    return { data };
+    const { data } = await customFetch.get("/jobs", { params });
+
+    return { data, params };
   } catch (error) {
     toast.error(error?.response?.data?.message);
     return error;
@@ -19,10 +22,11 @@ export const loader = async () => {
 
 const AllJobsContext = createContext();
 export const AllJobs = () => {
-  const { data } = useLoaderData();
+  const { data, params } = useLoaderData();
+  console.log(data);
   return (
     <>
-      <AllJobsContext.Provider value={{ data }}>
+      <AllJobsContext.Provider value={{ data, params }}>
         <SearchContainer />
         <JobsContainer />
       </AllJobsContext.Provider>

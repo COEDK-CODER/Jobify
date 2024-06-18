@@ -5,12 +5,52 @@ import dayjs from 'dayjs';
 
 import { nanoid } from 'nanoid';
 import { NotFoundError } from '../errors/customError.js';
+import { all } from 'async';
 let jobs=[{id:nanoid(),company:'Apple',position:'front-end'},{id:nanoid(),company:'Google',position:'back-end'}]
 
 export const getAllJobs=async(req,res)=>{
-    console.log(req.user);
-     const jobs =await  Job.find({createdBy:req.user.userId});
-    res.status(StatusCodes.OK).json({jobs});
+    console.log(req.query);
+    const {search,jobStatus,jobType,sort}=req.query;
+    const requestObject={createdBy:req.user.userId};
+    if(search){
+        requestObject.$or=[
+           {company:{$regex:search,$options:'i'}},
+           {position:{$regex:search,$options:'i'}} 
+        ]
+    }
+    
+    if(jobStatus && jobStatus!="all"){
+        requestObject.jobStatus=jobStatus;
+    }
+    if(jobType && jobType!="all"){
+        requestObject.jobType=jobType;
+    }
+
+
+    const sortOptions = {
+        newest: '-createdAt',
+        oldest: 'createdAt',
+        'a-z': 'position',
+        'z-a': '-position',
+      };
+    
+      const sortKey = sortOptions[sort] || sortOptions.newest;
+  // setup pagination
+  const page = Number(req.query.page) || 1;
+  const limit = Number(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  console.log(requestObject)
+  const jobs = await Job.find(requestObject)
+    .sort(sortKey)
+    .skip(skip)
+    .limit(limit);
+    const totalJobs = await Job.countDocuments(requestObject);
+    const numOfPages = Math.ceil(totalJobs / limit);
+  
+    res
+      .status(StatusCodes.OK)
+      .json({ totalJobs, numOfPages, currentPage: page, jobs });
 }
 
 export const createJob=async (req,res)=>{
